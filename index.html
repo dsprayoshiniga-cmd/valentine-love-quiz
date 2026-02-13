@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Our Love Story 💖</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#ff758c,#ff7eb3);
+    text-align:center;
+    color:white;
+    overflow:hidden;
+}
+
+.heart-bg{
+    position:fixed;
+    bottom:-50px;
+    font-size:20px;
+    animation: floatUp 8s linear infinite;
+    opacity:0.7;
+}
+
+@keyframes floatUp{
+    from{transform:translateY(0);}
+    to{transform:translateY(-100vh);}
+}
+
+.container{
+    padding-top:80px;
+}
+
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:25px;
+    background:#ff2e63;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    margin:10px;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.1);
+}
+
+.quiz{
+    display:none;
+    margin-top:40px;
+}
+
+.option{
+    display:block;
+    margin:10px auto;
+    width:250px;
+}
+
+.popup{
+    font-size:20px;
+    margin-top:20px;
+    min-height:30px;
+}
+
+.ring{
+    font-size:90px;
+    display:none;
+    animation: pop 1s infinite alternate;
+}
+
+@keyframes pop{
+    from{transform:scale(1);}
+    to{transform:scale(1.2);}
+}
+
+.love-letter{
+    display:none;
+    padding:40px;
+    font-size:20px;
+    line-height:1.6;
+}
+
+.love-photo{
+    width:250px;
+    height:auto;
+    border-radius:10px;
+    margin:20px 0;
+    box-shadow:0 4px 15px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>From My Heart 💖 To My Love</h1>
+<button onclick="startQuiz()" id="startBtn">Start Our Love Game 💘</button>
+
+<div class="quiz" id="quizBox">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <div class="popup" id="popup"></div>
+    <div class="ring" id="ring">💍</div>
+</div>
+
+<div class="love-letter" id="letter">
+    <h2>My Love 💕</h2>
+    <img src="love.jpg" class="love-photo">
+    <p>
+        From the day we met, everything changed beautifully.  
+        Every memory with you is special to me.  
+        I promise to stand beside you, love you,  
+        and choose you every single day. 💖  
+    </p>
+    <h3>Forever Yours ❤️</h3>
+</div>
+
+</div>
+
+<script>
+
+/* Floating Hearts */
+setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.innerHTML="💖";
+    heart.classList.add("heart-bg");
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.fontSize=(Math.random()*20+15)+"px";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),8000);
+},500);
+
+/* MIXED QUESTIONS */
+const quizData = [
+{
+    question:"Do you remember the exact place where we met for the first time?",
+    options:["Forum mall","Koyembadu bus stand","Queensland"],
+    answer:"Koyembadu bus stand"
+},
+{
+    question:"Do you remember who messaged/spoke first?",
+    options:["Me","You","We"],
+    answer:"Me"
+},
+{
+    question:"What small detail about that place do you still remember?",
+    options:["Besant nagar beach","Vadapazhani","Astalakshmi kovil"],
+    answer:"Astalakshmi kovil"
+},
+{
+    question:"Which movie we went together after marriage?",
+    options:["Doctor","Sultan","Karnan"],
+    answer:"Sultan"
+},
+{
+    question:"Who is the most important person in my life?",
+    options:["You","Me"],
+    answer:"You"
+},
+{
+    question:"Will you be my Valentine? 💖",
+    options:["No 😜","Yes 💕"],
+    answer:"Yes 💕"
+}
+];
+
+let currentQuestion = 0;
+
+function startQuiz(){
+    document.getElementById("startBtn").style.display="none";
+    document.getElementById("quizBox").style.display="block";
+    loadQuestion();
+}
+
+function loadQuestion(){
+    document.getElementById("popup").innerHTML="";
+    document.getElementById("ring").style.display="none";
+
+    const q = quizData[currentQuestion];
+    document.getElementById("question").innerText = q.question;
+
+    const optionsBox = document.getElementById("options");
+    optionsBox.innerHTML="";
+
+    q.options.forEach(option=>{
+        const btn = document.createElement("button");
+        btn.innerText=option;
+        btn.classList.add("option");
+
+        if(q.question.includes("Valentine") && option.includes("No")){
+            btn.onmouseover = moveNoButton;
+        }
+
+        btn.onclick=()=>checkAnswer(option);
+        optionsBox.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected){
+
+    const correct = quizData[currentQuestion].answer;
+
+    const scoldings = [
+        "Ayyooo 😒 Think properly!",
+        "Wrong answer 😏 Try again!",
+        "Cheating ah? Not correct!",
+        "Focus pleaseee 😜",
+        "Nooo 😆 That’s wrong!"
+    ];
+
+    if(selected===correct){
+
+        if(currentQuestion === quizData.length-1){
+
+            document.getElementById("popup").innerHTML="You said YES 💖";
+            document.getElementById("ring").style.display="block";
+            startFireworks();
+
+            setTimeout(()=>{
+                document.getElementById("quizBox").style.display="none";
+                document.getElementById("letter").style.display="block";
+                showProposal();
+            },3000);
+
+        }else{
+            document.getElementById("popup").innerHTML="Correct my love 💕";
+            setTimeout(()=>{
+                currentQuestion++;
+                loadQuestion();
+            },1200);
+        }
+
+    }else{
+        let randomScold = scoldings[Math.floor(Math.random()*scoldings.length)];
+        document.getElementById("popup").innerHTML=randomScold;
+    }
+}
+
+function moveNoButton(e){
+    const funnyTexts = [
+        "No ah? Think again 😏",
+        "Really no? 😜",
+        "Say yes only 😆",
+        "You can't escape 😌",
+        "Yes is better 💕"
+    ];
+
+    const btn = e.target;
+    btn.innerText = funnyTexts[Math.floor(Math.random()*funnyTexts.length)];
+    btn.style.position="absolute";
+    btn.style.left=Math.random()*80+"vw";
+    btn.style.top=Math.random()*80+"vh";
+}
+
+function startFireworks(){
+    for(let i=0;i<30;i++){
+        const fire=document.createElement("div");
+        fire.innerHTML="✨";
+        fire.style.position="absolute";
+        fire.style.left=Math.random()*100+"vw";
+        fire.style.top=Math.random()*100+"vh";
+        fire.style.fontSize="30px";
+        document.body.appendChild(fire);
+        setTimeout(()=>fire.remove(),2000);
+    }
+}
+
+function showProposal(){
+    setTimeout(()=>{
+        alert("Will you marry me? 💍💖");
+    },2000);
+}
+
+</script>
+
+</body>
+</html>
